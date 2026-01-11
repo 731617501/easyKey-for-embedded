@@ -1,21 +1,15 @@
 #include "ezkey.h"
 
-// write your read io function here
-uint8_t io_read(pGPIO GPIOx, uint16_t PIN) {
-  return ;
-}
-//end
 
 //KEY结构体定义
 struct key
 {
-  pGPIO GPIOx;
-  uint16_t      PIN;
   uint8_t       ACTIVE_LEVEL;  //按键的有效电平
   uint8_t       pre_isPress;  
   uint8_t       isPress;
   uint8_t       keepTime;
   uint8_t       isUp;
+  pfun          io_read;
 };
 
 //KEY按键数组（包含全部按键）
@@ -25,26 +19,15 @@ struct key KeyArray[numKeys];
 volatile static uint8_t numInitKey = 0 ;
 
 
-
-/**
- * @brief the function is going to init the key
- * 
- * @param KeyGPIOx 
- * @param KeyPIN 
- * @param KeyActiveLevel 
- * @return KEY 
- */
-KEY KEY_Init ( pGPIO KeyGPIOx , uint16_t KeyPIN , uint8_t KeyActiveLevel)
+KEY KEY_Init ( uint8_t KeyActiveLevel , pfun io_read )
 {
 
-  
-  //Key初始化
-  (&KeyArray[numInitKey])->GPIOx = KeyGPIOx;
-  (&KeyArray[numInitKey])->PIN = KeyPIN;
-  (&KeyArray[numInitKey])->ACTIVE_LEVEL = KeyActiveLevel;
-  (&KeyArray[numInitKey])->pre_isPress = 0 ;
-  (&KeyArray[numInitKey])->isPress = 0 ;
-  (&KeyArray[numInitKey])->keepTime = 0;
+ 
+  KeyArray[numInitKey].ACTIVE_LEVEL = KeyActiveLevel;
+  KeyArray[numInitKey].pre_isPress = 0 ;
+  KeyArray[numInitKey].isPress = 0 ;
+  KeyArray[numInitKey].keepTime = 0;
+  KeyArray[numInitKey].io_read = io_read ;
   
   //指向下一个初始化按键
   numInitKey++;
@@ -57,8 +40,8 @@ void KEY_Scan()
 {
   for( int i = 0 ; i < numInitKey ; i++  )
   {
-    (&KeyArray[i])->pre_isPress = (&KeyArray[i])->isPress ;
-    if( io_read( KeyArray[i].GPIOx , KeyArray[i].PIN ) == KeyArray[i].ACTIVE_LEVEL )  
+    KeyArray[i].pre_isPress = KeyArray[i].isPress ;
+    if( KeyArray[i].io_read() == KeyArray[i].ACTIVE_LEVEL )  
          (&KeyArray[i])->isPress = 1 ;
     else (&KeyArray[i])->isPress = 0 ;
 
