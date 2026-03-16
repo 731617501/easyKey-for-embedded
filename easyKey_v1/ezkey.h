@@ -30,12 +30,20 @@ typedef uint8_t           ( *pf_read ) ( );
 typedef void      ( *pf_key_callback ) ( );
 
 
-//初始化按键,绑定读取函数和触发后的回调函数
+/**
+  * @brief  初始化按键,绑定读取函数和触发后的回调函数
+  * @param  KeyActiveLevel      填入你的有效电平
+  * @param  io_read             填入你的按键读取函数，记住要和有效电平对应的上
+  * @param  click_callback      在单击按键后会触发的函数
+  * @param  long_press_callback 在长按案件后会触发的函数     
+  * @retval None
+  */
 void KEY_Init (  uint8_t                KeyActiveLevel , 
                  pf_read                       io_read , 
                  pf_key_callback        click_callback , 
                  pf_key_callback   long_press_callback    );
 
+                 
 //按键读取的主要实现部分，需要把这个函数放在一个定时器的中断回调中
 void KEY_Tick( );
 

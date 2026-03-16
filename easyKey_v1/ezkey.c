@@ -85,13 +85,15 @@ void KEY_Init (  uint8_t              key_active_level ,
 }
 
 void KEY_Task( )
-{
+{   
+    //按键组遍历
     for( int i = 0 ; i < numInitKey ; i++  )
     {
+         //检查是否初始化，以及被触发
         if( INIT    ==  KeyArray[i].is_init  && 
             TRIGGER ==  KeyArray[i].isUp        )
         {
-
+            //触发逻辑部分
             if( LONG_PRESS_TIME < KeyArray[i].keep_time &&
                 KeyArray[i].keep_time < MAX_PRESS_TIME       )
             {
@@ -104,6 +106,7 @@ void KEY_Task( )
                 KeyArray[i].pf_click_callback();
             }
             
+            //还原isUp和keeptime
             KeyArray[i].keep_time = 0 ;
             KeyArray[i].isUp = NOT_TRIGGER ;
         }
@@ -112,11 +115,14 @@ void KEY_Task( )
 
 
 void KEY_Scan()
-{
+{   
+    //按键组遍历
     for( int i = 0 ; i < numInitKey ; i++  )
     {
+        //检查是否初始化
         if( INIT == KeyArray[i].is_init )
         {
+            //---扫描逻辑实现---//
             if( KeyArray[i].active_level 
                                          == KeyArray[i].pf_io_read() )
             {

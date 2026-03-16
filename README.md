@@ -15,13 +15,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 ```
 2.  `KEY_Init()`使用KEY_Init来初始化你的按键，他需要四个参数
+``` c
+/**
 > active_level : 激活电平 
 > io_read      : 按键电平读取函数
 > click_cb     : 点击按键时会触发的函数
 > long_press_cb: 长按按键的收会触发的函数
-
-``` c
-KEY key1 = KEY_Init( active_level , io_read, click_cb , long_press_cb );
+*/
+KEY_Init( active_level , io_read, click_cb , long_press_cb );
 ```
 
 3. `KEY_Task`这是最后一步，你只需要把KEY_Task()放在裸机的主循环中，或者是RTOS的任务中,然后一切你的按键就会生效，你就可以正常使用了
